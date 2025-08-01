@@ -1,46 +1,50 @@
 import tkinter as tk
-
-CELL_SIZE = 50
-BOARD_SIZE = 10  # 10x10 grid
-
-PLAYER_COLORS = ["red", "blue", "green", "purple", "orange", "brown"]
+from game.board import CELL_SIZE, BOARD_SIZE
 
 class BoardView(tk.Canvas):
-    def __init__(self, root, game_engine):
-        canvas_size = CELL_SIZE * BOARD_SIZE
-        super().__init__(root, width=canvas_size, height=canvas_size, bg="white")
+    def __init__(self, root, game_engine, click_callback=None):
+        super().__init__(root, width=CELL_SIZE*BOARD_SIZE, height=CELL_SIZE*BOARD_SIZE, bg="white")
         self.game = game_engine
-        self.draw_grid()
-        self.draw_players()
+        self.click_callback = click_callback
+        self.bind("<Button-1>", self.on_click)
+        self.draw_board()
 
-    def draw_grid(self):
+    def draw_board(self):
+        self.delete("all")
+        # Draw rooms
+        for room, data in self.game.board.rooms.items():
+            x1, y1, x2, y2 = [c * CELL_SIZE for c in data["coords"]]
+            self.create_rectangle(x1, y1, x2, y2, fill=data["color"], outline="black")
+            self.create_text((x1+x2)//2, (y1+y2)//2, text=room, font=("Helvetica", 10, "bold"))
+
+        # Grid lines
         for i in range(BOARD_SIZE):
-            for j in range(BOARD_SIZE):
-                x0 = j * CELL_SIZE
-                y0 = i * CELL_SIZE
-                x1 = x0 + CELL_SIZE
-                y1 = y0 + CELL_SIZE
-                self.create_rectangle(x0, y0, x1, y1, outline="gray")
+            self.create_line(i*CELL_SIZE, 0, i*CELL_SIZE, CELL_SIZE*BOARD_SIZE, fill="gray")
+            self.create_line(0, i*CELL_SIZE, CELL_SIZE*BOARD_SIZE, i*CELL_SIZE, fill="gray")
+
+        self.draw_players()
 
     def draw_players(self):
         self.delete("player")
-        for index, player in enumerate(self.game.players):
-            if player is None or not getattr(player, "active", True):
-                continue  # Skip eliminated players
-
+        colors = ["red", "blue", "green", "purple", "orange", "brown"]
+        for idx, player in enumerate(self.game.players):
+            if not player or not player.active:
+                continue
             x, y = player.position
-            color = PLAYER_COLORS[index % len(PLAYER_COLORS)]
+            px, py = x*CELL_SIZE + CELL_SIZE//2, y*CELL_SIZE + CELL_SIZE//2
+            self.create_oval(px-15, py-15, px+15, py+15, fill=colors[idx], tags="player")
+            self.create_text(px, py, text=player.character[0], fill="white", font=("Helvetica", 12, "bold"), tags="player")
 
-            # Draw token (circle)
-            self.create_oval(
-                y * CELL_SIZE + 10, x * CELL_SIZE + 10,
-                y * CELL_SIZE + 40, x * CELL_SIZE + 40,
-                fill=color, tags="player"
-            )
+    def set_valid_moves(self, moves):
+        """Highlight the valid squares the player can move to."""
+        self.delete("highlight")
+        for x, y in moves:
+            x1, y1 = x*CELL_SIZE, y*CELL_SIZE
+            x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
+            self.create_rectangle(x1, y1, x2, y2, outline="yellow", width=2, tags="highlight")
 
-            # Display player name under the token
-            self.create_text(
-                y * CELL_SIZE + 25, x * CELL_SIZE + 45,
-                text=player.name[:8],  # limit to 8 characters for fit
-                font=("Helvetica", 9), tags="player"
-            )
+    def on_click(self, event):
+        if not self.click_callback:
+            return
+        grid_x, grid_y = event.x // CELL_SIZE, event.y // CELL_SIZE
+        self.click_callback(grid_x, grid_y)

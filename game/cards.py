@@ -1,16 +1,15 @@
-
 CHARACTER_CARDS = [
-    "Miss Scarlett",
+    "Miss Scarlet",
     "Colonel Mustard",
-    "Mrs. White",
-    "Reverend Green",
-    "Mrs. Peacock",
+    "Mrs White",
+    "Mr Green",
+    "Mrs Peacock",
     "Professor Plum"
 ]
 
 WEAPON_CARDS = [
     "Candlestick",
-    "Dagger",
+    "Knife",
     "Lead Pipe",
     "Revolver",
     "Rope",
@@ -23,8 +22,8 @@ ROOM_CARDS = [
     "Conservatory",
     "Dining Room",
     "Billiard Room",
-    "Library",
     "Lounge",
     "Hall",
+    "Library",
     "Study"
 ]
