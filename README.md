@@ -76,7 +76,7 @@ Cluedo-/
 
 
 <h2>👨‍💻 Author</h2>
-<p>Developed by Liz</p>
+<p>Naresh</p>
 
 </body>
 </html>
