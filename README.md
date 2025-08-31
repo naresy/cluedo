@@ -63,7 +63,6 @@ Cluedo-/
 
 <h2>📌 Notes</h2>
 <ul>
-  <li>Currently, only one room (Kitchen) is implemented. You can add more rooms and room entry logic via the board and engine.</li>
   <li>AI logic is basic and meant for simulation only. Feel free to expand it with smarter decision-making.</li>
   <li>Code is modular and beginner-friendly for further enhancements or academic use.</li>
 </ul>
