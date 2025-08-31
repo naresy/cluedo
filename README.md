@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Cluedo Game - README</title>
-</head>
-<body>
+
 
 <h1>🔍 Cluedo Game (Python + Tkinter)</h1>
 
